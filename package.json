@@ -1,0 +1,12 @@
+{
+  "name": "grpc-node-reflection-service",
+  "version": "1.0.0",
+  "description": "gRPC Node Reflection service implementation",
+  "main": "index.js",
+  "repository": "https://github.com/papajuanito/grpc-node-reflection-service",
+  "author": "Javier Velazquez",
+  "license": "MIT",
+  "dependencies": {
+    "@grpc/proto-loader": "^0.5.6"
+  }
+}
