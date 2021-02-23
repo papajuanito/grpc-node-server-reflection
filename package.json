@@ -12,4 +12,8 @@
     "@types/google-protobuf": "^3.7.4",
     "google-protobuf": "^3.15.1"
   },
+  "scripts": {
+    "postinstall": "yarn generate:proto-types",
+    "generate:proto-types": "proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=generated/ ./src/proto/grpc/reflection/v1alpha/reflection.proto"
+  }
 }

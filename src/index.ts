@@ -7,6 +7,7 @@ import { ServerReflectionRequest } from '../generated/grpc/reflection/v1alpha/Se
 import { ServerReflectionResponse } from '../generated/grpc/reflection/v1alpha/ServerReflectionResponse';
 import { ServerReflectionHandlers } from '../generated/grpc/reflection/v1alpha/ServerReflection';
 import { ListServiceResponse } from '../generated/grpc/reflection/v1alpha/ListServiceResponse';
+import { ErrorResponse } from '../generated/grpc/reflection/v1alpha/ErrorResponse';
 
 const getServiceNameFromServiceDefinition = (
   serviceDefinition: protoLoader.ServiceDefinition,
@@ -28,6 +29,39 @@ const createListServicesResponse = (
   }),
 });
 
+const getMethodDefinitionFromServices = (
+  services: protoLoader.ServiceDefinition[],
+  methodPath: string,
+) => {
+  return services.reduce<protoLoader.MethodDefinition<any, any> | undefined>(
+    (methodDefinition, service) => {
+      if (typeof methodDefinition !== 'undefined') {
+        return methodDefinition;
+      }
+
+      return Object.values(service).find((method) => {
+        return method.path.replaceAll('/', '.').includes(methodPath);
+      });
+    },
+    undefined,
+  );
+};
+
+const createErrorResponseForStatusAndMessage = (
+  status: grpc.status,
+  message?: string,
+): ErrorResponse => {
+  const errorResponse: ErrorResponse = {
+    errorCode: status,
+  };
+
+  if (message) {
+    errorResponse;
+  }
+
+  return errorResponse;
+};
+
 const createServerReflectionInfoHandler = (
   services: protoLoader.ServiceDefinition[],
 ): grpc.handleBidiStreamingCall<
@@ -35,11 +69,38 @@ const createServerReflectionInfoHandler = (
   ServerReflectionResponse
 > => (call) => {
   call.on('data', (request: ServerReflectionRequest) => {
-    if (request.listServices) {
+    const { fileContainingSymbol, listServices } = request;
+    if (listServices) {
       const response: ServerReflectionResponse = {
         listServicesResponse: createListServicesResponse(services),
       };
       call.write(response);
+    }
+
+    if (fileContainingSymbol) {
+      const methodDefinition = getMethodDefinitionFromServices(
+        services,
+        fileContainingSymbol,
+      );
+
+      if (!methodDefinition) {
+        const errorResponse = createErrorResponseForStatusAndMessage(
+          grpc.status.NOT_FOUND,
+        );
+        call.write({
+          errorResponse,
+        });
+
+        return;
+      }
+
+      const { fileDescriptorProtos } = methodDefinition.requestType;
+
+      call.write({
+        fileDescriptorResponse: {
+          fileDescriptorProto: fileDescriptorProtos,
+        },
+      });
     }
   });
 
