@@ -1,0 +1,14 @@
+{
+  "include": ["src"],
+  "compilerOptions": {
+		"target": "es2017",
+    "lib": ["esnext", "dom"],
+    "declaration": false,
+    "sourceMap": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "isolatedModules": false,
+    "outDir": "build",
+    "noEmit": false
+  }
+}
