@@ -12,7 +12,8 @@
     "cjs",
     "esm",
     "types",
-    "src"
+    "src",
+    "proto"
   ],
   "dependencies": {
     "@grpc/grpc-js": "^1.2.8",
@@ -20,7 +21,7 @@
   },
   "scripts": {
     "postinstall": "yarn generate:proto-types",
-    "generate:proto-types": "proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=generated/ ./src/proto/grpc/reflection/v1alpha/reflection.proto",
+    "generate:proto-types": "proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=./src/generated ./proto/grpc/reflection/v1alpha/reflection.proto",
     "build-cjs": "tsc --allowJs --outDir cjs --noEmit false --module CommonJS",
     "build-esm": "tsc --allowJs --outDir esm --noEmit false --moduleResolution node --module ES2015",
     "build-types": "tsc --declaration --declarationMap --isolatedModules false --outDir types --emitDeclarationOnly --noEmit false",

@@ -2,12 +2,12 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 
-import { ProtoGrpcType } from '../generated/reflection';
-import { ServerReflectionRequest } from '../generated/grpc/reflection/v1alpha/ServerReflectionRequest';
-import { ServerReflectionResponse } from '../generated/grpc/reflection/v1alpha/ServerReflectionResponse';
-import { ServerReflectionHandlers } from '../generated/grpc/reflection/v1alpha/ServerReflection';
-import { ListServiceResponse } from '../generated/grpc/reflection/v1alpha/ListServiceResponse';
-import { ErrorResponse } from '../generated/grpc/reflection/v1alpha/ErrorResponse';
+import { ProtoGrpcType } from './generated/reflection';
+import { ServerReflectionRequest } from './generated/grpc/reflection/v1alpha/ServerReflectionRequest';
+import { ServerReflectionResponse } from './generated/grpc/reflection/v1alpha/ServerReflectionResponse';
+import { ServerReflectionHandlers } from './generated/grpc/reflection/v1alpha/ServerReflection';
+import { ListServiceResponse } from './generated/grpc/reflection/v1alpha/ListServiceResponse';
+import { ErrorResponse } from './generated/grpc/reflection/v1alpha/ErrorResponse';
 
 const getServiceNameFromServiceDefinition = (
   serviceDefinition: protoLoader.ServiceDefinition,
@@ -143,7 +143,9 @@ const wrapServerWithRefelection = (server: grpc.Server): grpc.Server => {
   });
 
   const serverReflectionPackageDefinition = protoLoader.loadSync(
-    `${path.resolve(__dirname)}/proto/grpc/reflection/v1alpha/reflection.proto`,
+    `${path.resolve(
+      __dirname,
+    )}/../proto/grpc/reflection/v1alpha/reflection.proto`,
   );
 
   const packageObject = (grpc.loadPackageDefinition(

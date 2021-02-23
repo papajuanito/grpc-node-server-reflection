@@ -1,5 +1,5 @@
 {
-  "include": ["src"],
+  "include": ["src", "generated"],
   "compilerOptions": {
 		"target": "es2017",
     "lib": ["esnext", "dom"],
