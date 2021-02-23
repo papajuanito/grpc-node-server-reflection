@@ -17,7 +17,8 @@
   ],
   "dependencies": {
     "@grpc/grpc-js": "^1.2.8",
-    "@grpc/proto-loader": "^0.6.0-pre17"
+    "@grpc/proto-loader": "^0.6.0-pre17",
+    "google-protobuf": "^3.15.1"
   },
   "scripts": {
     "postinstall": "yarn generate:proto-types",
@@ -29,6 +30,7 @@
     "prepublishOnly": "yarn build"
   },
   "devDependencies": {
+    "@types/google-protobuf": "^3.7.4",
     "concurrently": "^6.0.0",
     "tsc": "^1.20150623.0",
     "typescript": "^4.1.5"

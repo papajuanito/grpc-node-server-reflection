@@ -1,6 +1,7 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
+import { FileDescriptorProto } from 'google-protobuf/google/protobuf/descriptor_pb';
 
 import { ProtoGrpcType } from './generated/reflection';
 import { ServerReflectionRequest } from './generated/grpc/reflection/v1alpha/ServerReflectionRequest';
@@ -29,9 +30,19 @@ const createListServicesResponse = (
   }),
 });
 
-const getMethodDefinitionFromServices = (
+const getIfFileDescriptorContainsFileContainingSymbol = (
+  fileDescriptor: FileDescriptorProto,
+  fileContainingSymbol: string,
+) => {
+  // TODO: is this check sufficient? Do we want to do a more thorough
+  //check towards the service list or message list?
+  const packageName = fileDescriptor.getPackage();
+  return fileContainingSymbol.includes(packageName);
+};
+
+const getMethodDefinitionFromServicesByFileContainingSymbol = (
   services: protoLoader.ServiceDefinition[],
-  methodPath: string,
+  fileContainingSymbol: string,
 ) => {
   return services.reduce<protoLoader.MethodDefinition<any, any> | undefined>(
     (methodDefinition, service) => {
@@ -40,7 +51,20 @@ const getMethodDefinitionFromServices = (
       }
 
       return Object.values(service).find((method) => {
-        return method.path.replaceAll('/', '.').includes(methodPath);
+        const isFileContainingSymbolInService =
+          method.requestType.fileDescriptorProtos.findIndex(
+            (fileDescriptorProto) => {
+              const fdp = FileDescriptorProto.deserializeBinary(
+                fileDescriptorProto,
+              );
+              return getIfFileDescriptorContainsFileContainingSymbol(
+                fdp,
+                fileContainingSymbol,
+              );
+            },
+          ) !== -1;
+
+        return isFileContainingSymbolInService;
       });
     },
     undefined,
@@ -78,7 +102,7 @@ const createServerReflectionInfoHandler = (
     }
 
     if (fileContainingSymbol) {
-      const methodDefinition = getMethodDefinitionFromServices(
+      const methodDefinition = getMethodDefinitionFromServicesByFileContainingSymbol(
         services,
         fileContainingSymbol,
       );
