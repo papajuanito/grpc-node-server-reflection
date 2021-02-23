@@ -115,7 +115,7 @@ const createServerReflectionServiceHandlers = (
   ServerReflectionInfo: createServerReflectionInfoHandler(services),
 });
 
-const serverWithRefelection = (server: grpc.Server): grpc.Server => {
+const wrapServerWithRefelection = (server: grpc.Server): grpc.Server => {
   const services: protoLoader.ServiceDefinition[] = [];
 
   const addService = (service: protoLoader.ServiceDefinition) => {
@@ -159,4 +159,4 @@ const serverWithRefelection = (server: grpc.Server): grpc.Server => {
   return serverProxy;
 };
 
-export default serverWithRefelection;
+export default wrapServerWithRefelection;
