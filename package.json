@@ -1,6 +1,6 @@
 {
   "name": "grpc-node-server-reflection",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "gRPC Node Server Reflection implementation",
   "main": "cjs/index.js",
   "module": "esm/index.js",
