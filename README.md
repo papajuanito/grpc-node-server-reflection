@@ -65,5 +65,4 @@ Current Support by Server Reflection Request type:
 | ListServices            | List the full names of registered services                                                                   | :heavy_check_mark: |
 | FileContainingSymbol    | Find the proto file that declares the given fully-qualified symbol name.                                     | :heavy_check_mark: |
 | FileByFilename          | Find a proto file by the file name.                                                                          | :x:                |
-| FileContainingExtension | Find the proto file which defines an extension extending the given message type with the given field number. | :heavy_check_mark: |
 | FileContainingExtension | Find the proto file which defines an extension extending the given message type with the given field number. | :x:                |
